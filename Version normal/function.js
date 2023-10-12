@@ -96,7 +96,7 @@ class AplicacionClima {
 const aplicacionClima = new AplicacionClima();
 
 function imprimir() {
-    const nombreCiudad = aplicacionClima.opcionesCiudad.getElementsByTagName("h4")[0].textContent.replace("Clima en la ciudad de: "); 
+    const nombreCiudad = aplicacionClima.opcionesCiudad.getElementsByTagName("h4")[0].textContent.replace(); 
     const climaPromedio = parseFloat(aplicacionClima.opcionesCiudad.getElementsByTagName("h1")[0].textContent.replace("°C", ""));
     const climaMayor = parseFloat(aplicacionClima.opcionesCiudad.getElementsByTagName("p")[0].textContent.replace("Max: ", "").replace("°C", ""));
     const climaMenor = parseFloat(aplicacionClima.opcionesCiudad.getElementsByTagName("p")[1].textContent.replace("Min: ", "").replace("°C", ""));
@@ -104,7 +104,7 @@ function imprimir() {
     const content = `
       
       <h1>Valores de Clima</h1>
-      <p>Clima en la ciudad de : ${nombreCiudad}</p>
+      <p>${nombreCiudad}</p>
       <p>Clima Promedio: ${climaPromedio}°C</p>
       <p>Clima Máximo: ${climaMayor}°C</p>
       <p>Clima Mínimo: ${climaMenor}°C</p>
@@ -113,12 +113,31 @@ function imprimir() {
     const printWindow = window.open('', '', 'width=600,height=600');
     printWindow.document.open();
     printWindow.document.write(`
-      <html>
-      <head>
-        <title>Valores de Clima</title>
-      </head>
-      <body>${content}</body>
-      </html>
+    <html>
+    <head>
+      <title>Valores de Clima</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: black; 
+          color: white; 
+        }
+        h1 {
+          color: #333;
+        }
+        p {
+          margin: 5px 0;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Valores de Clima</h1>
+      <p>Clima en la ciudad de: ${nombreCiudad}</p>
+      <p>Clima Promedio: ${climaPromedio}°C</p>
+      <p>Clima Máximo: ${climaMayor}°C</p>
+      <p>Clima Mínimo: ${climaMenor}°C</p>
+    </body>
+    </html>
     `);
     printWindow.document.close();
     printWindow.print();
