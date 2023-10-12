@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clima APP</title>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #principal {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        #opcionesCiudad {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #buttonCalcular {
+            background-color: #5e6063;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        #buttonCalcular:hover {
+            background-color: #243d5f;
+            transform: scaleX(0.80);
+        }
+
+        footer {
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Estilo para la pantalla emergente */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #tablaClima {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #tablaClima th {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+        }
+
+        #tablaClima td {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+
+        .popup-button {
+            background-color: #5e6063;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+        .popup-button:hover {
+            background-color: #243d5f;
+            transform: scaleX(0.95);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="principal" class="weather-content">
+        <h1>Aplicación del clima</h1>
+        <div id="opcionesCiudad">
+            <h4>clima en:</h4>
+            <h1>28°C</h1>
+            <p>Max: 29°C</p>
+            <p>Min: 26°C</p>
+        </div>
+
+        <form action=""  class="get-weather">
+            <label for="city">Ciudad:</label>
+            <select name="" id="ciudades">
+                <option value="">Chahuites</option>
+                <option value="">Ciudad Ixtepec</option>
+                <option value="">Cuilapan de Guerrero</option>
+                <option value="">Huajuapan de León</option>
+                <option value="">Juchitan de Zaragoza</option>
+                <option value="">Matias Romero</option>
+                <option value="">Miahuatlán de Porfirio Díaz</option>
+                <option value="">Nejapa de Madero</option>
+                <option value="Oaxaca de Juarez">Oaxaca de Juarez</option>
+                <option value="">Ocotlán de Morelos</option>
+                <option value="">Salina Cruz</option>
+                <option value="">Santa Maria Huatulco</option>
+                <option value="">Pinotepa Nacional</option>
+                <option value="">Santo Domingo Tehuantepec</option>
+                <option value="">Tlacolula de Matamoros</option>
+                <option value="">Villa de Zaachila</option>
+                <option value="">Zimatlan de Álvarez</option>
+            </select>
+
+            <p>Ingresa los datos del clima: </p>
+            <input type="button" value="Ingresar datos" id="mostrarTablaButton">
+        </form>
+    </div>
+
+    <!-- Contenedor de la pantalla emergente -->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2>Tabla de Datos del Clima</h2>
+            <p>Ingresa los datos en °C </p>
+            <table id="tablaClima">
+                <tr>
+                    <th>Día</th>
+                    <th>Temperatura de Mañana</th>
+                    <th>Temperatura de Tarde</th>
+                    <th>Temperatura de Noche</th>
+                </tr>
+            </table>
+            <br> <br>
+            <button id="cerrarPopup">Cerrar</button>
+            <button id="enviarPopup">Calcular Clima</button>
+        </div>
+    </div>
+
+    <footer>©2023 Derechos Reservados - Carlos Eugenio</footer>
+
+    <script>
+        var nombre = document.getElementById("nombreLugar");
+        const mostrarTablaButton = document.getElementById('mostrarTablaButton');
+        const popup = document.getElementById('popup');
+        const cerrarPopup = document.getElementById('cerrarPopup');
+        const tablaClima = document.getElementById('tablaClima');
+        const enviarPopup = document.getElementById('enviarPopup');
+        const editableCells = document.getElementsByClassName('editable-cell');
+        const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        let climaData = [];
+
+        mostrarTablaButton.addEventListener('click', function () {
+            // Abre la ventana emergente
+            popup.style.display = 'block';
+
+            // Llena la tabla con los días de la semana
+            for (let i = 0; i < diasSemana.length; i++) {
+                const fila = tablaClima.insertRow(-1);
+                const celdaDia = fila.insertCell(0);
+                const celdaManana = fila.insertCell(1);
+                const celdaTarde = fila.insertCell(2);
+                const celdaNoche = fila.insertCell(3);
+
+                celdaDia.innerHTML = diasSemana[i];
+                celdaManana.innerHTML = '<input type="text" class="editable-cell" placeholder = "ej. 35.5 ">';
+                celdaTarde.innerHTML = '<input type="text" class="editable-cell">';
+                celdaNoche.innerHTML = '<input type="text" class="editable-cell">';
+            }
+        });
+
+        cerrarPopup.addEventListener('click', function () {
+            // Cierra la ventana emergente
+            popup.style.display = 'none';
+        });
+
+        enviarPopup.addEventListener('click', function () {
+            // Guardar los valores ingresados en una matriz
+            climaData = [];
+            for (let i = 0; i < editableCells.length; i++) {
+                climaData.push(editableCells[i].value);
+            }
+
+            // Mostrar un mensaje de valores guardados
+            alert('Valores de clima guardados: ');
+
+            // Cierra la ventana emergente
+            popup.style.display = 'none';
+
+            const ciudad = document.getElementById("ciudades");
+            const opcionesCiudad = document.getElementById("opcionesCiudad");
+
+            ciudad.addEventListener("change", function () {
+                const ciudadActual = ciudad.value;
+
+                // Cambiar el contenido del <h4> cuando cambie la selección
+                opcionesCiudad.getElementsByTagName("h4")[0].textContent = "Clima enn: " + ciudadActual;
+            })
+
+
+            // Reiniciar los valores de las celdas
+            for (let i = 0; i < editableCells.length; i++) {
+                editableCells[i].value = '';
+            }
+        });
+
+    </script>
+</body>
+
+</html>
