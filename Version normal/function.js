@@ -1,3 +1,4 @@
+
 class AplicacionClima {
     constructor() {
         this.climaData = [];
@@ -81,6 +82,7 @@ class AplicacionClima {
             document.getElementById("principal").style.color = "black";
         }
 
+
         alert('Valores de clima guardados: ');
         this.popup.style.display = 'none';
 
@@ -92,3 +94,33 @@ class AplicacionClima {
 
 // Crea una instancia de la clase AplicacionClima para iniciar la aplicación
 const aplicacionClima = new AplicacionClima();
+
+function imprimir() {
+    const nombreCiudad = aplicacionClima.opcionesCiudad.getElementsByTagName("h4")[0].textContent.replace("Clima en la ciudad de: "); 
+    const climaPromedio = parseFloat(aplicacionClima.opcionesCiudad.getElementsByTagName("h1")[0].textContent.replace("°C", ""));
+    const climaMayor = parseFloat(aplicacionClima.opcionesCiudad.getElementsByTagName("p")[0].textContent.replace("Max: ", "").replace("°C", ""));
+    const climaMenor = parseFloat(aplicacionClima.opcionesCiudad.getElementsByTagName("p")[1].textContent.replace("Min: ", "").replace("°C", ""));
+
+    const content = `
+      
+      <h1>Valores de Clima</h1>
+      <p>Clima en la ciudad de : ${nombreCiudad}</p>
+      <p>Clima Promedio: ${climaPromedio}°C</p>
+      <p>Clima Máximo: ${climaMayor}°C</p>
+      <p>Clima Mínimo: ${climaMenor}°C</p>
+    `;
+
+    const printWindow = window.open('', '', 'width=600,height=600');
+    printWindow.document.open();
+    printWindow.document.write(`
+      <html>
+      <head>
+        <title>Valores de Clima</title>
+      </head>
+      <body>${content}</body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
+}
