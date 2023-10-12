@@ -24,7 +24,7 @@ var nombre = document.getElementById("nombreLugar");
             while (tablaClima.rows.length > 1) {
                 tablaClima.deleteRow(1);
             }
-            
+
             // Llena la tabla con los días de la semana
             for (let i = 0; i < diasSemana.length; i++) {
                 const fila = tablaClima.insertRow(-1);
@@ -49,7 +49,13 @@ var nombre = document.getElementById("nombreLugar");
             // Guardar los valores ingresados en una matriz
             climaData = [];
             for (let i = 0; i < editableCells.length; i++) {
-                climaData.push(parseFloat(editableCells[i].value));
+                const valor = parseFloat(editableCells[i].value);
+                // Verificar que las celdas estén completas
+                if (isNaN(valor)) {
+                    alert('Hay celdas vacias, por favor rellene todas las celdas');
+                    return; // Detener el proceso si falta algún valor
+                }
+                climaData.push(valor);
             }
 
             //calcular el promedio de los datos
