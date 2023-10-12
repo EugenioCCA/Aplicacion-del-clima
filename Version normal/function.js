@@ -8,7 +8,7 @@ const editableCells = document.getElementsByClassName('editable-cell');
 const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 let climaData = [];
 
-
+//Obtenemos los elementos necesarios para alterar la parte del nombre de la ciudad, con respecto a lo que el usuario seleccione. 
 const ciudad = document.getElementById("ciudades");
 const opcionesCiudad = document.getElementById("opcionesCiudad");
 
@@ -72,10 +72,14 @@ enviarPopup.addEventListener('click', function () {
     //console.log(climaMayor);
     //console.log(climaMenor);
 
+
+    //Agregar los valores calculados anteriomente en el html, para que se muestren en pantalla 
     opcionesCiudad.getElementsByTagName("h1")[0].textContent = climaPromedio.toFixed(1) + "°C";
     opcionesCiudad.getElementsByTagName("p")[0].textContent = "Max: " + climaMayor + "°C";
     opcionesCiudad.getElementsByTagName("p")[1].textContent = "Min: " + climaMenor + "°C";
 
+
+    //Con esta condicional podemos agregar una imagen de fondo que cambiara dependiente del clima, en este caso el umbral es de 25. 
     if (climaPromedio < 25) {
         document.body.style.backgroundImage = "url('imagenes/nublado.jpg')";
         document.body.style.backgroundSize = "cover";
