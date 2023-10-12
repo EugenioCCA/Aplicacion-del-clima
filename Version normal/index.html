@@ -125,7 +125,7 @@
         <h1>Aplicación del clima</h1>
         <div id="opcionesCiudad">
             <h4>clima en:</h4>
-            <h1>28°C</h1>
+            <h1 > 28°C</h1>
             <p>Max: 29°C</p>
             <p>Min: 26°C</p>
         </div>
@@ -188,13 +188,13 @@ const enviarPopup = document.getElementById('enviarPopup');
 const editableCells = document.getElementsByClassName('editable-cell');
 const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 let climaData = [];
+
 const ciudad = document.getElementById("ciudades");
 const opcionesCiudad = document.getElementById("opcionesCiudad");
 
 ciudad.addEventListener("change", function () {
     const ciudadActual = ciudad.value;
 
-    // Cambiar el contenido del <h4> cuando cambie la selección
     opcionesCiudad.getElementsByTagName("h4")[0].textContent = "Clima en: " + ciudadActual;
 });
 
@@ -226,8 +226,21 @@ enviarPopup.addEventListener('click', function () {
     // Guardar los valores ingresados en una matriz
     climaData = [];
     for (let i = 0; i < editableCells.length; i++) {
-        climaData.push(editableCells[i].value);
+        climaData.push(parseFloat(editableCells[i].value));
     }
+
+    //calcular el promedio de los datos
+    const climaPromedio = climaData.reduce((acc, val) => acc + val , 0)/climaData.length;
+
+    //encontrar el valor mas bajo
+    const climaMenor  = Math.min(...climaData);
+
+    //encontrar el valor mayor
+    const climaMayor = Math.max(...climaData);
+
+    console.log(climaPromedio.toFixed(1));
+    console.log(climaMayor);
+    console.log(climaMenor);
 
     // Mostrar un mensaje de valores guardados
     alert('Valores de clima guardados: ');
