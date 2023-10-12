@@ -125,9 +125,9 @@
         <h1>Aplicación del clima</h1>
         <div id="opcionesCiudad">
             <h4>clima en:</h4>
-            <h1 > 28°C</h1>
-            <p>Max: 29°C</p>
-            <p>Min: 26°C</p>
+            <h1 >clima promedio: °C</h1>
+            <p id="maxima">Max: °C</p>
+            <p id="minima">Min: °C</p>
         </div>
 
         <form action=""  class="get-weather">
@@ -238,9 +238,15 @@ enviarPopup.addEventListener('click', function () {
     //encontrar el valor mayor
     const climaMayor = Math.max(...climaData);
 
-    console.log(climaPromedio.toFixed(1));
-    console.log(climaMayor);
-    console.log(climaMenor);
+    //console.log(climaPromedio.toFixed(1));
+    //console.log(climaMayor);
+    //console.log(climaMenor);
+
+    opcionesCiudad.getElementsByTagName("h1")[0].textContent = climaPromedio.toFixed(1) + "°C";
+    opcionesCiudad.getElementsByTagName("p")[0].textContent = "Max: " + climaMayor + "°C";
+    opcionesCiudad.getElementsByTagName("p")[1].textContent = "Min: " + climaMenor + "°C";
+
+
 
     // Mostrar un mensaje de valores guardados
     alert('Valores de clima guardados: ');
