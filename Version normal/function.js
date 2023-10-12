@@ -1,105 +1,94 @@
-var nombre = document.getElementById("nombreLugar");
-const mostrarTablaButton = document.getElementById('mostrarTablaButton');
-const popup = document.getElementById('popup');
-const cerrarPopup = document.getElementById('cerrarPopup');
-const tablaClima = document.getElementById('tablaClima');
-const enviarPopup = document.getElementById('enviarPopup');
-const editableCells = document.getElementsByClassName('editable-cell');
-const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-let climaData = [];
+class AplicacionClima {
+    constructor() {
+        this.climaData = [];
+        this.diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        this.ciudad = document.getElementById("ciudades");
+        this.opcionesCiudad = document.getElementById("opcionesCiudad");
+        this.mostrarTablaButton = document.getElementById('mostrarTablaButton');
+        this.popup = document.getElementById('popup');
+        this.tablaClima = document.getElementById('tablaClima');
+        this.editableCells = document.getElementsByClassName('editable-cell');
+        this.cerrarPopup = document.getElementById('cerrarPopup');
+        this.enviarPopup = document.getElementById('enviarPopup');
 
-//Obtenemos los elementos necesarios para alterar la parte del nombre de la ciudad, con respecto a lo que el usuario seleccione. 
-const ciudad = document.getElementById("ciudades");
-const opcionesCiudad = document.getElementById("opcionesCiudad");
+        this.ciudad.addEventListener("change", () => {
+            const ciudadActual = this.ciudad.value;
+            this.opcionesCiudad.getElementsByTagName("h4")[0].textContent = "Clima en: " + ciudadActual;
+        });
 
-ciudad.addEventListener("change", function () {
-    const ciudadActual = ciudad.value;
+        this.mostrarTablaButton.addEventListener('click', () => this.mostrarTabla());
 
-    opcionesCiudad.getElementsByTagName("h4")[0].textContent = "Clima en: " + ciudadActual;
-});
+        this.cerrarPopup.addEventListener('click', () => this.cerrarVentanaEmergente());
 
-mostrarTablaButton.addEventListener('click', function () {
-    // Abre la ventana emergente
-    popup.style.display = 'block';
-
-    while (tablaClima.rows.length > 1) {
-        tablaClima.deleteRow(1);
+        this.enviarPopup.addEventListener('click', () => this.calcularClima());
     }
 
-    // Llena la tabla con los días de la semana
-    for (let i = 0; i < diasSemana.length; i++) {
-        const fila = tablaClima.insertRow(-1);
-        const celdaDia = fila.insertCell(0);
-        const celdaManana = fila.insertCell(1);
-        const celdaTarde = fila.insertCell(2);
-        const celdaNoche = fila.insertCell(3);
+    mostrarTabla() {
+        // Abre la ventana emergente
+        this.popup.style.display = 'block';
 
-        celdaDia.innerHTML = diasSemana[i];
-        celdaManana.innerHTML = '<input type="text" class="editable-cell" placeholder = "ej. 35.5 ">';
-        celdaTarde.innerHTML = '<input type="text" class="editable-cell">';
-        celdaNoche.innerHTML = '<input type="text" class="editable-cell">';
-    }
-});
-
-cerrarPopup.addEventListener('click', function () {
-    // Cierra la ventana emergente
-    popup.style.display = 'none';
-});
-
-enviarPopup.addEventListener('click', function () {
-    // Guardar los valores ingresados en una matriz
-    climaData = [];
-    for (let i = 0; i < editableCells.length; i++) {
-        const valor = parseFloat(editableCells[i].value);
-        // Verificar que las celdas estén completas
-        if (isNaN(valor)) {
-            alert('Hay celdas vacias, por favor rellene todas las celdas');
-            return; // Detener el proceso si falta algún valor
+        while (this.tablaClima.rows.length > 1) {
+            this.tablaClima.deleteRow(1);
         }
-        climaData.push(valor);
+
+        // Llena la tabla con los días de la semana
+        for (let i = 0; i < this.diasSemana.length; i++) {
+            const fila = this.tablaClima.insertRow(-1);
+            const celdaDia = fila.insertCell(0);
+            const celdaManana = fila.insertCell(1);
+            const celdaTarde = fila.insertCell(2);
+            const celdaNoche = fila.insertCell(3);
+
+            celdaDia.innerHTML = this.diasSemana[i];
+            celdaManana.innerHTML = '<input type="text" class="editable-cell" placeholder = "ej. 35.5 ">';
+            celdaTarde.innerHTML = '<input type="text" class="editable-cell">';
+            celdaNoche.innerHTML = '<input type="text" class="editable-cell">';
+        }
     }
 
-    //calcular el promedio de los datos
-    const climaPromedio = climaData.reduce((acc, val) => acc + val, 0) / climaData.length;
-
-    //encontrar el valor mas bajo
-    const climaMenor = Math.min(...climaData);
-
-    //encontrar el valor mayor
-    const climaMayor = Math.max(...climaData);
-
-    //console.log(climaPromedio.toFixed(1));
-    //console.log(climaMayor);
-    //console.log(climaMenor);
-
-
-    //Agregar los valores calculados anteriomente en el html, para que se muestren en pantalla 
-    opcionesCiudad.getElementsByTagName("h1")[0].textContent = climaPromedio.toFixed(1) + "°C";
-    opcionesCiudad.getElementsByTagName("p")[0].textContent = "Max: " + climaMayor + "°C";
-    opcionesCiudad.getElementsByTagName("p")[1].textContent = "Min: " + climaMenor + "°C";
-
-
-    //Con esta condicional podemos agregar una imagen de fondo que cambiara dependiente del clima, en este caso el umbral es de 25. 
-    if (climaPromedio < 25) {
-        document.body.style.backgroundImage = "url('imagenes/nublado.jpg')";
-        document.body.style.backgroundSize = "cover";
-        document.getElementById("principal").style.backgroundColor = "rgba(78, 92, 105, 0.4)";
-
-    } else {
-        document.body.style.backgroundImage = "url('imagenes/soleado.jpeg')";
-        document.body.style.backgroundSize = "cover";
-        document.getElementById("principal").style.backgroundColor = "rgba(104, 158, 212 , 0.7)";
-        document.getElementById("principal").style.color = "black";
+    cerrarVentanaEmergente() {
+        // Cierra la ventana emergente
+        this.popup.style.display = 'none';
     }
 
-    // Mostrar un mensaje de valores guardados
-    alert('Valores de clima guardados: ');
+    calcularClima() {
+        this.climaData = [];
+        for (let i = 0; i < this.editableCells.length; i++) {
+            const valor = parseFloat(this.editableCells[i].value);
+            if (isNaN(valor)) {
+                alert('Hay celdas vacías, por favor rellene todas las celdas');
+                return;
+            }
+            this.climaData.push(valor);
+        }
 
-    // Cierra la ventana emergente
-    popup.style.display = 'none';
+        const climaPromedio = this.climaData.reduce((acc, val) => acc + val, 0) / this.climaData.length;
+        const climaMenor = Math.min(...this.climaData);
+        const climaMayor = Math.max(...this.climaData);
 
-    // Reiniciar los valores de las celdas
-    for (let i = 0; i < editableCells.length; i++) {
-        editableCells[i].value = '';
+        this.opcionesCiudad.getElementsByTagName("h1")[0].textContent = climaPromedio.toFixed(1) + "°C";
+        this.opcionesCiudad.getElementsByTagName("p")[0].textContent = "Max: " + climaMayor + "°C";
+        this.opcionesCiudad.getElementsByTagName("p")[1].textContent = "Min: " + climaMenor + "°C";
+
+        if (climaPromedio < 25) {
+            document.body.style.backgroundImage = "url('imagenes/nublado.jpg')";
+            document.body.style.backgroundSize = "cover";
+            document.getElementById("principal").style.backgroundColor = "rgba(78, 92, 105, 0.4)";
+        } else {
+            document.body.style.backgroundImage = "url('imagenes/soleado.jpeg')";
+            document.body.style.backgroundSize = "cover";
+            document.getElementById("principal").style.backgroundColor = "rgba(104, 158, 212, 0.7)";
+            document.getElementById("principal").style.color = "black";
+        }
+
+        alert('Valores de clima guardados: ');
+        this.popup.style.display = 'none';
+
+        for (let i = 0; i < this.editableCells.length; i++) {
+            this.editableCells[i].value = '';
+        }
     }
-});
+}
+
+// Crea una instancia de la clase AplicacionClima para iniciar la aplicación
+const aplicacionClima = new AplicacionClima();
