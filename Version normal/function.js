@@ -21,6 +21,10 @@ var nombre = document.getElementById("nombreLugar");
             // Abre la ventana emergente
             popup.style.display = 'block';
 
+            while (tablaClima.rows.length > 1) {
+                tablaClima.deleteRow(1);
+            }
+            
             // Llena la tabla con los días de la semana
             for (let i = 0; i < diasSemana.length; i++) {
                 const fila = tablaClima.insertRow(-1);
